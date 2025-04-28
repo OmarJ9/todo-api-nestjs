@@ -1,0 +1,7 @@
+services:
+  mongo:
+    container_name: mongo_db # human-readable name for the container
+    image: mongo:latest # explicitly specify a tag
+    ports:
+      - '27017:27017'
+    restart: unless-stopped # auto-restart if container stops
