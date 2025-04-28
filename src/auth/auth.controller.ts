@@ -35,11 +35,11 @@ export class AuthController {
   }
 
   @UseGuards(RefreshTokenGuard)
-  @Post('refresh-token')
+  @Post('refresh')
   refreshToken(@Request() req: RequestWithUser): Promise<AuthTokens> {
     return this.authService.refreshToken(
       req.user.userId,
-      req.user.refreshToken,
+      req.user.refreshTokenHash,
     );
   }
 }

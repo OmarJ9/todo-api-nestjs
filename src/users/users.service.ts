@@ -13,9 +13,7 @@ export class UsersService {
   }
 
   async findById(id: string): Promise<UserDocument | null> {
-    const user = await this.userModel
-      .findById(id)
-      .select('-passwordHash -refreshTokenHash');
+    const user = await this.userModel.findById(id).select('-passwordHash');
     if (!user) {
       throw new NotFoundException('User not found');
     }

@@ -129,13 +129,18 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const isRefreshTokenValid = await this.comparePasswords(
+    const isRefreshTokenValid = await bcrypt.compare(
       refreshToken,
       user.refreshTokenHash,
     );
     if (!isRefreshTokenValid) {
       throw new UnauthorizedException('Invalid refresh token');
     }
+
+    // Invalidate the used refresh token immediately
+    await this.usersService.setRefreshTokenHash(userId, null);
+
+    console.log('user', user);
 
     const payload: JwtPayload = {
       sub: user._id.toString(),

@@ -9,7 +9,7 @@ export interface AuthTokens {
 export interface RequestWithUser extends Request {
   user: {
     userId: string;
-    refreshToken: string;
+    refreshTokenHash: string;
   };
 }
 
