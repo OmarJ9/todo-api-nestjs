@@ -5,6 +5,7 @@ import {
   Req,
   Request,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
@@ -21,7 +22,7 @@ export class AuthController {
   async register(@Body() createUserDto: CreateUserDto): Promise<AuthTokens> {
     return this.authService.register(createUserDto);
   }
-
+  @HttpCode(200)
   @Post('login')
   async login(@Body() loginDto: LoginUserDto): Promise<AuthTokens> {
     return this.authService.login(loginDto.email, loginDto.password);
