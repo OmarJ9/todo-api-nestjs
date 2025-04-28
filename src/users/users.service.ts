@@ -40,4 +40,8 @@ export class UsersService {
       { $set: { refreshTokenHash } },
     );
   }
+
+  async getAllUsers(): Promise<UserDocument[]> {
+    return this.userModel.find().select('-passwordHash -refreshTokenHash');
+  }
 }

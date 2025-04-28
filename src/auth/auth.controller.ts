@@ -6,6 +6,7 @@ import {
   Request,
   UseGuards,
   HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/create-user-dto';
@@ -22,7 +23,7 @@ export class AuthController {
   async register(@Body() createUserDto: CreateUserDto): Promise<AuthTokens> {
     return this.authService.register(createUserDto);
   }
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() loginDto: LoginUserDto): Promise<AuthTokens> {
     return this.authService.login(loginDto.email, loginDto.password);
@@ -36,6 +37,7 @@ export class AuthController {
 
   @UseGuards(RefreshTokenGuard)
   @Post('refresh')
+  @HttpCode(HttpStatus.OK)
   refreshToken(@Request() req: RequestWithUser): Promise<AuthTokens> {
     return this.authService.refreshToken(
       req.user.userId,
