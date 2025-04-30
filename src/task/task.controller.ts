@@ -3,40 +3,50 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Req,
+  UseGuards,
   Param,
-  Delete,
+  Put,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { RequestWithUser } from 'src/auth/auth.interface';
+import { AccessTokenGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdateTaskDto } from './dto/update-task.dto';
-
+import { Delete } from '@nestjs/common';
 @Controller('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  @UseGuards(AccessTokenGuard)
+  create(@Body() createTaskDto: CreateTaskDto, @Req() req: RequestWithUser) {
+    return this.taskService.create(createTaskDto, req.user.userId);
   }
+
+  // @Get()
+  // @UseGuards(AccessTokenGuard)
+  // findAll(@Req() req: RequestWithUser) {
+  //   return this.taskService.findAll(req.user.userId);
+  // }
 
   @Get()
-  findAll() {
-    return this.taskService.findAll();
+  @UseGuards(AccessTokenGuard)
+  findTaskByDate(@Req() req: RequestWithUser, @Body('date') date: string) {
+    return this.taskService.findTaskByDate(req.user.userId, date);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  @Put(':id')
+  @UseGuards(AccessTokenGuard)
+  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    await this.taskService.update(id, updateTaskDto);
+    return { message: 'Task updated successfully' };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.taskService.remove(+id);
+  @UseGuards(AccessTokenGuard)
+  async delete(@Param('id') id: string) {
+    await this.taskService.delete(id);
+    return { message: 'Task deleted successfully' };
   }
 }
