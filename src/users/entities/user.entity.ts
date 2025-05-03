@@ -20,6 +20,9 @@ export class User {
 
   @Prop({ type: [String], default: [Role.USER] })
   roles: Role[];
+
+  @Prop({ type: Number, default: 0, min: 0, max: 10 })
+  avatarIndex: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
